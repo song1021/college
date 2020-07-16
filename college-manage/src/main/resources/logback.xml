@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--参考：https://www.cnblogs.com/whalesea/p/10950628.html-->
+    <!--输出日志到控制台-->
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <!--负责把事件转成字符串，格式化日志信息的输出-->
+        <layout>
+            <pattern>
+                <!--%d是日期，%msg是日志消息%n换行-->
+                [%p]%d-%msg%n
+            </pattern>
+        </layout>
+    </appender>
+    <appender name="fileLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤日志级别 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>debug</level>
+            <!--<onMatch>DENY</onMatch>-->
+        </filter>
+        <encoder>
+            <pattern>
+                [%p]%d-%msg%n
+            </pattern>
+        </encoder>
+        <!-- 指定文件的输出位置-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                D:/logs2019/%d.log
+            </fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <!--日志级别-->
+    <root level="DEBUG">
+        <appender-ref ref="consoleLog"></appender-ref>
+        <appender-ref ref="fileLog"></appender-ref>
+    </root>
+</configuration>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>专业列表</title>
+    <!--引入layui的样式和js-->
+    <link rel="stylesheet" href="layui-v2.5.6/css/layui.css">
+    <script src="layui-v2.5.6/layui.js"></script>
+
+</head>
+<body>
+    <h1 style="text-align: center">专业列表</h1>
+    <!--专业列表分页查询-->
+    <div>
+        <form id="majorListForm" class="layui-form" lay-filter="majorListForm">
+            <div class="layui-form-item" style="float: right">
+                <div class="layui-inline">
+                    <!--学院列表-->
+                    <div class="layui-form-item" style="float: left">
+                        <label class="layui-form-label">学院名称：</label>
+                        <div class="layui-input-block">
+                            <select id="cidSelect_search" name="cid">
+                                <option value="0">请选择学院</option>
+                                <option value="1">写作</option>
+                                <option value="2">阅读</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <a class="layui-btn" onclick="fenye()">查询</a>
+                    <a class="layui-btn" id="toAddMajorBtn">添加</a>
+                </div>
+            </div>
+            <div style="clear: both"></div>
+        </form>
+
+        <!--分页table-->
+        <table id="majorList" lay-filter="majorList"></table>
+
+        <!--查看，修改，删除按钮-->
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        </script>
+
+        <!--“添加专业”弹框 -->
+        <form id="majorAddForm" class="layui-form" lay-filter="majorAddForm"
+              style="width: 400px;padding:10px;display: none"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+            <h2 style="text-align: center">添加专业</h2>
+            <div class="layui-form-item">
+                <label class="layui-form-label">专业名称：</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required"  name="mname" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">学分：</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" name="credit" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">毕业年限：</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" name="lifeyear" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text" >
+                <label class="layui-form-label">专业介绍：</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" lay-verify="required" name="introduction" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item" >
+                <label class="layui-form-label">学院名称：</label>
+                <div class="layui-input-block">
+                    <select id="cidSelect" name="cid" lay-verify="required">
+                        <option value="0">请选择学院</option>
+                        <option value="1">写作</option>
+                        <option value="2">阅读</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <a class="layui-btn" id="addMajorBtn">立即提交</a>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</body>
+
+<script src="js/major_list.js"></script>
+<script>
+    /*var baseUrl = "http://localhost:8080/";
+
+    /!*格式化页面或者数据 ctrl+shilf+L*!/
+    layui.use(['table', 'jquery'], function () {
+        var table = layui.table;
+        var $ = layui.jquery;
+
+        //渲染table
+        table.render({
+            elem: '#majorList'
+            , url: baseUrl + 'major/list'
+            , where: {cid: $("#collegeListSelect").val()}
+//            ,width: 800
+            // 自定义response解析
+            , parseData: function (res) { //res 即为原始返回的数据
+                var status = res.status == 200 ? 0 : res.status;
+                return {
+                    "code": status, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.obj.total, //解析数据长度
+                    "data": res.obj.list //解析数据列表
+                };
+            }
+            //请求添加过滤条件
+            /!*,request: {
+             pageName: 'currentPage' //页码的参数名称，默认：page
+             ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+             }*!/
+            , cols: [[
+                {field: 'mid', width: 80, title: 'ID', sort: true}
+                , {field: 'mname', width: 120, title: '专业名称'}
+                , {field: 'credit', width: 120, title: '学分', sort: true}
+                , {field: 'lifeyear', width: 120, title: '学时'}
+                , {field: 'introduction', title: '专业介绍', minWidth: 150}
+                , {field: 'cid', width: 120, title: '学院编号', sort: true}
+            ]]
+            , page: true
+        });
+    });
+
+
+    //通过ajax获取学院你列表
+    layui.use("jquery", function () {
+        var $ = layui.jquery;
+        $.ajax({
+            url: baseUrl + "/college/list",
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json;charset=UTF-8",
+            success: function (data) {
+                //console.log(data);
+                if (data && data.obj) {
+                    $("#collegeListSelect").html("");
+                    $("#collegeListSelect").append("<option value='0' selected='selected'>全部</option>");
+                    var collgeList = data.obj;
+                    for (var i = 0; i < collgeList.length; i++) {
+                        var college = collgeList[i];
+                        $("#collegeListSelect").append("<option value='" + college.cid + "'>" + college.cname + "</option>")
+                    }
+                }
+            },
+            fail: function () {
+                alert("请求失败");
+            }
+        })
+    })*/
+
+</script>
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.college.common.mapper.MajorMapper">
+  <resultMap id="BaseResultMap" type="com.college.common.entity.Major">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="mid" jdbcType="INTEGER" property="mid" />
+    <result column="mname" jdbcType="VARCHAR" property="mname" />
+    <result column="credit" jdbcType="INTEGER" property="credit" />
+    <result column="LifeYear" jdbcType="INTEGER" property="lifeyear" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="cid" jdbcType="INTEGER" property="cid" />
+  </resultMap>
+</mapper>
